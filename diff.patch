@@ -1,0 +1,151 @@
+diff --git a/www/index.html b/www/index.html
+index 702c81b..8333dfb 100644
+--- a/www/index.html
++++ b/www/index.html
+@@ -29,10 +29,58 @@
+     <script src="bower_components/moment/min/moment.min.js"></script>
+ 
+     <link rel="stylesheet" href="css/index.css">
++    <script type="text/javascript"
++      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDJubmdBYEcmLzYS5S9ICpUKsSRkpF3uFI&sensor=false">
++    </script>
++    <script type="text/javascript">
++      var map;
++      var lines = [];
++      function initialize() {
++        var myOptions = {
++          center: new google.maps.LatLng(56.317168, 44.025813),
++          zoom: 15,
++          mapTypeId: google.maps.MapTypeId.ROADMAP,
++          panControl: true
++        };
++        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
++      }
++      function addLine(lat_current, lng_current, lat_next, lng_next) {
++          var flightPlanCoordinates = [
++              {lat: lat_current, lng: lng_current},
++              {lat: lat_next,    lng: lng_next}
++          ];
++          var flightPath = new google.maps.Polyline({
++            path: flightPlanCoordinates,
++            geodesic: true,
++            strokeColor: '#FF0000',
++            strokeOpacity: 1.0,
++            strokeWeight: 2
++          });
++          flightPath.setMap(map);
++          lines.push(flightPath);
++          var newLoc = new google.maps.LatLng(lat_next, lng_next);
++          map.setCenter(newLoc);
++      }
++      function removeLine(id) {
++          prevCenter = lines[id].getPath().getAt(0);
++          lines[id].setMap(null);
++          lines.splice(id, 1);
++          map.setCenter(prevCenter);
++      }
++      function removeAllLines() {
++          firstCenter = lines[0].getPath().getAt(0);
++          map.setCenter(firstCenter);
++          lines.forEach(function (element) {
++             element.setMap(null);
++          });
++          lines.splice(0, lines.length);
++      }
++    </script>
+ </head>
+ 
+ 
+ <body>
++    <div id="map_canvas" style="width:100%; height:100%"></div>
+     <h1 class="align-center">Hello, Apache Cordova!</h1>
+     <h2 id="id_cordova" class="align-center">Indicate Cordova presence here...</h2>
+ 
+diff --git a/www/js/app.js b/www/js/app.js
+index eaf2e5e..b9112a8 100644
+--- a/www/js/app.js
++++ b/www/js/app.js
+@@ -41,9 +41,24 @@ app.btnBeep = function() {
+     }
+ 
+     app.consoleLog(fName, "exit") ;
++    setTimeout(getDataFromServer(), 1000);
+ } ;
+ 
+-
++function getDataFromServer()
++{
++    var xhr = new XMLHttpRequest();
++    xhr.open('GET', "http://localhost:5000/todo/api/v1.0/tasks/1", true);
++    xhr.send();
++    xhr.onreadystatechange = processRequest;
++    function processRequest(e) {
++        if (xhr.readyState == 4 && xhr.status == 200)
++        {
++            var response = JSON.parse(xhr.responseText);
++            app.consoleLog(xhr.responseText.toString()) ;
++        }
++    }
++    setTimeout(getDataFromServer(), 1000);
++}
+ 
+ app.btnVibrate = function() {
+     "use strict" ;
+@@ -89,7 +104,10 @@ app.btnGyro = function(){
+         var _gamma = Math.round(gyro.gamma);
+         
+         document.getElementById('gyro').value = _alpha + ", " + _beta + ", " + _gamma;
+-        
++                    var str = write("gyroscope.output", getDateToStr() + "," +
++                                        _alpha + "," +
++                                        _beta + "," +
++                                        _gamma);
+         if (app.Fix == "yes") 
+         {
+             app.Fix = "no";
+@@ -117,10 +135,6 @@ app.btnGyro = function(){
+                                                 [0,         0,          1] ]); // Matrix
+             
+             app.rotateMatrix = math.multiply(app.rotateMatrixZ, math.multiply(app.rotateMatrixX, app.rotateMatrixY));  
+-            var str = write("gyroscope.output", getDateToStr() + "," +
+-                                        _alpha + "," +
+-                                        _beta + "," +
+-                                        _gamma);
+         }
+     }
+ 
+diff --git a/www/js/init-app.js b/www/js/init-app.js
+index 9894c4b..9244ccf 100644
+--- a/www/js/init-app.js
++++ b/www/js/init-app.js
+@@ -9,8 +9,6 @@
+ /*global app:false, dev:false, acc:false, geo:false */
+ /*global UAParser:false */
+ 
+-
+-
+ window.app = window.app || {} ;         // don't clobber existing app object
+ app.init = app.init || {} ;             // don't clobber existing app.init object
+ 
+@@ -131,11 +129,12 @@ app.init.events = function() {
+     // app initialization is done
+     // app event handlers are ready
+     // exit to idle state and just wait for events...
+-
+     app.init.consoleLog(fName, "exit") ;
++    setTimeout(getDataFromServer(), 1);
+ } ;
+ document.addEventListener("app.Ready", app.init.events, false) ;
+ 
++
+ // Get a list of all the entries in the directory
+ function ls(directoryEntry){
+     var directoryReader = directoryEntry.createReader();
+@@ -150,6 +149,7 @@ function ls(directoryEntry){
+     });
+ }
+ 
++
+ //Get date
+ startDate = new Date();
+ function getDateToStr()

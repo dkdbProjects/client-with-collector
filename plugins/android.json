@@ -1,0 +1,23 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-device-motion": {},
+        "cordova-plugin-device-orientation": {},
+        "cordova-plugin-device": {},
+        "cordova-plugin-geolocation": {},
+        "cordova-plugin-file": {},
+        "cordova-plugin-media": {},
+        "cordova-plugin-vibration": {},
+        "cordova-plugin-inappbrowser": {},
+        "cordova-plugin-splashscreen": {},
+        "cordova-plugin-dialogs": {},
+        "cordova-plugin-statusbar": {}
+    },
+    "dependent_plugins": {}
+}
