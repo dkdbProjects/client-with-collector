@@ -11,20 +11,7 @@
 
 window.app = window.app || {} ;         // don't clobber existing app object
 
-var app.timer = {}
-var app.getDataFromServer = function(){
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', "http://localhost:5000/todo/api/v1.0/tasks", true);
-    xhr.send();
-    xhr.onreadystatechange = processRequest;
-    function processRequest(e) {
-        if (xhr.readyState == 4 && xhr.status == 200)
-        {
-            var response = JSON.parse(xhr.responseText);
-            app.consoleLog(xhr.responseText.toString()) ;
-        }
-    }   
-}
+
 // The console.log() messages sprinkled in this file are for instruction and debug.
 // If you reuse this code you do not need to include them as part of your app.
 // Set to "true" if you want the console.log messages to appear.
@@ -54,7 +41,6 @@ app.btnBeep = function() {
     }
 
     app.consoleLog(fName, "exit") ;
-    timer = setInterval;
 } ;
 
 

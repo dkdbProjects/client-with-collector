@@ -56,7 +56,7 @@ app.init.events = function() {
     acc.initAccel() ;
     acc.initCompass() ;
     geo.initGeoLocate() ;
-    app.updateDeviceInfo() ;
+    //app.updateDeviceInfo() ;
 
     // NOTE: initialize your app event handlers
     // See main.js, cordova-acc.js and cordova-geo.js for event handlers.
@@ -161,17 +161,49 @@ function getDateToStr()
 // Write data
 var writeMode = "file"
 var buffer= {};
+var bufferloc = "";
+var bufferForServer = '{"title":"';
+var count = 0;
+var flag = 0;
 
 function write(fileName, data)
 {
     // ~ every 5 sec
-    if (buffer.hasOwnProperty(fileName) && buffer[fileName].length < 2500) {
+    /*if (buffer.hasOwnProperty(fileName) && buffer[fileName].length < 2500) {
         writeToBuffer(fileName, data);
     }
     else {
         data = buffer[fileName] + data + "\nbuffer cleaned!";
         buffer[fileName] = '';
         writeToFile (fileName, data);
+    }*/
+    //app.timer = setInterval(app.getDataFromServer, 1000);
+    acc.consoleLog(bufferForServer.length);
+    if(bufferForServer.length > 2000 && flag == 0)
+    {
+        sendPostRequest();
+        //getDataFromServer();
+    }
+    var flagloc = 0;
+    if (fileName == "accelerometer.output")
+    {
+            flagloc = 1;
+    }
+    if(flag == flagloc)
+        return;
+    else{
+        count = count + 1;
+        if (count == 2)
+        {
+            bufferForServer = bufferForServer + "," + data + ",";
+            //acc.consoleLog(bufferForServer);
+            //bufferForServer = "";
+            count = 0;
+        }
+        else {
+            bufferForServer = bufferForServer + data;  
+        }
+        flag = flagloc;
     }
 }
 
