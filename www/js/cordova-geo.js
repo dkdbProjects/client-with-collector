@@ -169,7 +169,7 @@ geo.locate = function(geoOpts) {
         //document.getElementById("geo-speed").value = pos.coords.speed ;
         //document.getElementById("geo-timestamp").value = pos.timestamp ;
         
-        write("gps.locale.output", getDateToStr() + "," + 
+        writeGPS("gps.locale.output", getDateToStr() + "," + 
                                   pos.coords.latitude.toFixed(6) + "," +
                                   pos.coords.longitude.toFixed(6)
         );
@@ -227,7 +227,7 @@ geo.locateXDK = function(geoOpts) {
         document.getElementById("geo-latitude").value = pos.coords.latitude ;
         document.getElementById("geo-longitude").value = pos.coords.longitude ;
         
-        write("gps.locale.xdk.output", getDateToStr() + "," + 
+        writeGPS("gps.locale.xdk.output", getDateToStr() + "," + 
                                   pos.coords.latitude.toFixed(6) + "," +
                                   pos.coords.longitude.toFixed(6)
         );
@@ -280,7 +280,7 @@ geo.btnGeo = function() {
         document.getElementById("geo-longitude").value = pos.coords.longitude ;
         document.getElementById("geo-speed").value =  pos.coords.speed ;
         
-        write("gps.geo.output", getDateToStr() + "," + 
+        writeGPS("gps.geo.output", getDateToStr() + "," + 
                                   pos.coords.latitude.toFixed(6) + "," +
                                   pos.coords.longitude.toFixed(6) + "," +
                                   pos.coords.speed.toFixed(6) 
@@ -341,7 +341,7 @@ geo.btnGeoXDK = function() {
         document.getElementById("geo-latitude").value = pos.coords.latitude ;
         document.getElementById("geo-longitude").value = pos.coords.longitude ;
 
-        write("gps.geo.xdk.output", getDateToStr() + "," + 
+        writeGPS("gps.geo.xdk.output", getDateToStr() + "," + 
                                   pos.coords.latitude.toFixed(6) + "," +
                                   pos.coords.longitude.toFixed(6)
         );

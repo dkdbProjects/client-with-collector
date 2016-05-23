@@ -163,27 +163,17 @@ function getDateToStr()
 var writeMode = "file"
 var buffer= {};
 var bufferloc = "";
-var bufferForServer = '{"title":"';
+var bufferForServer = '{"title":"time,accx,accy,accz,compass;';
+var bufferForGPS = 'last_coordinates;10,12;';
 var count = 0;
 var flag = 0;
 
 function write(fileName, data)
 {
-    // ~ every 5 sec
-    /*if (buffer.hasOwnProperty(fileName) && buffer[fileName].length < 2500) {
-        writeToBuffer(fileName, data);
-    }
-    else {
-        data = buffer[fileName] + data + "\nbuffer cleaned!";
-        buffer[fileName] = '';
-        writeToFile (fileName, data);
-    }*/
-    //app.timer = setInterval(app.getDataFromServer, 1000);
-    // acc.consoleLog(bufferForServer.length);
+    // ~ every 2 sec
     if(bufferForServer.length > 2000 && flag == 0)
     {
         sendPostRequest();
-        //getDataFromServer();
     }
     var flagloc = 0;
     if (fileName == "accelerometer.output")
@@ -196,9 +186,7 @@ function write(fileName, data)
         count = count + 1;
         if (count == 2)
         {
-            bufferForServer = bufferForServer + "," + data + ",";
-            //acc.consoleLog(bufferForServer);
-            //bufferForServer = "";
+            bufferForServer = bufferForServer + "," + data + ";";
             count = 0;
         }
         else {
@@ -208,12 +196,9 @@ function write(fileName, data)
     }
 }
 
-function writeToBuffer(fileName, data)
+function writeGPS(fileName, data)
 {
-    if (! buffer.hasOwnProperty(fileName)) {
-        buffer[fileName] = "";
-    }
-    buffer[fileName]+= ( data + "\n" );
+    bufferForGPS = 'last_coordinates;10,12;';
 }
 
 function writeToFile(fileName, data) {

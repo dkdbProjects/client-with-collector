@@ -256,15 +256,18 @@ acc.btnCompass = function() {
     acc.consoleLog(fName, "exit") ;
 } ;
 
+var speed = "0";
+var x_coordinate = "";
+var y_coordinate = "";
 function sendPostRequest() {
     var user_list = new XMLHttpRequest();
-    var url_user  = "http://server-dkdbproject.rhcloud.com/todo/api/v1.0/taskspost";
-    bufferForServer = bufferForServer + '"}';
+    var url_user  = "http://server-dkdbproject.rhcloud.com/todo/api/v1.0/tasks";
+    var sendText = bufferForServer+bufferForGPS + "last_speed;"+ speed+'"}';//"],\n" + bufferForGPS + "],\n" + 'last_speed [\n' + speed + ']\n}';
     //var params = 0;
-    //var params = '{"title":"Read a book"}';//'{"' + accx + '","' + accy + '","' + accz + '"}';
+    //var sendText = '{"title":"Read a book"}';//'{"' + accx + '","' + accy + '","' + accz + '"}';
     // The "true" flag means it is an asynchronous request
     user_list.open("POST", url_user);
-    
+    app.consoleLog(sendText) ;
      //Call a function when the state changes.
     user_list.onreadystatechange = function () 
     {
@@ -272,8 +275,15 @@ function sendPostRequest() {
             //JSON.parse(http.responseText)[0].dev_id;   
             //app.consoleLog("suc", user_list.status);
             //app.consoleLog("sucState", user_list.readyState);
-            //var response = JSON.parse(user_list.responseText);
-            //app.consoleLog(user_list.responseText.toString()) ;
+            var response = JSON.parse(user_list.responseText);
+            app.consoleLog(user_list.responseText.toString()) ;
+            var temp = user_list.responseText.toString().split(";");
+            var str = temp[1].split(",");
+            x_coordinate = str[0];
+            y_coordinate = str[1];
+            str = speed = temp[3].split('"');
+            speed = str[0];
+            bufferForGPS = 'last_coordinates;'+ x_coordinate + "," + y_coordinate + ";";
         }
         else 
         {
@@ -284,8 +294,8 @@ function sendPostRequest() {
     }   
     // Send the proper header information
     user_list.setRequestHeader("Content-Type", "application/json");
-    user_list.setRequestHeader("Content-length", bufferForServer.length); 
-    user_list.send(bufferForServer);
+    user_list.setRequestHeader("Content-length", sendText.length); 
+    user_list.send(sendText);
     //app.consoleLog(bufferForServer) ;
-    bufferForServer = '{"title":"';
+    bufferForServer = '{"title":"time,accx,accy,accz,compass;';
 }
