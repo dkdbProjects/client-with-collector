@@ -57,6 +57,7 @@ app.init.events = function() {
     acc.initCompass() ;
     geo.initGeoLocate() ;
     //app.updateDeviceInfo() ;
+    map.initialize();
 
     // NOTE: initialize your app event handlers
     // See main.js, cordova-acc.js and cordova-geo.js for event handlers.
@@ -178,7 +179,7 @@ function write(fileName, data)
         writeToFile (fileName, data);
     }*/
     //app.timer = setInterval(app.getDataFromServer, 1000);
-    acc.consoleLog(bufferForServer.length);
+    // acc.consoleLog(bufferForServer.length);
     if(bufferForServer.length > 2000 && flag == 0)
     {
         sendPostRequest();

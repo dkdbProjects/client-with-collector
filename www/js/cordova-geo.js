@@ -278,10 +278,12 @@ geo.btnGeo = function() {
         document.getElementById("geo-info").value = fName + " onSuccess " ;
         document.getElementById("geo-latitude").value = pos.coords.latitude ;
         document.getElementById("geo-longitude").value = pos.coords.longitude ;
+        document.getElementById("geo-speed").value =  pos.coords.speed ;
         
         write("gps.geo.output", getDateToStr() + "," + 
                                   pos.coords.latitude.toFixed(6) + "," +
-                                  pos.coords.longitude.toFixed(6)
+                                  pos.coords.longitude.toFixed(6) + "," +
+                                  pos.coords.speed.toFixed(6) 
         );
     }
 

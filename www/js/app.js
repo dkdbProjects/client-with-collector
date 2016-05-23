@@ -51,6 +51,7 @@ app.btnVibrate = function() {
     app.consoleLog(fName, "entry") ;
 
     try {
+        writeToFile("action.output", getDateToStr());
         navigator.notification.vibrate(250) ;
         app.consoleLog(fName, "try succeeded.") ;
     }
@@ -117,10 +118,10 @@ app.btnGyro = function(){
                                                 [0,         0,          1] ]); // Matrix
             
             app.rotateMatrix = math.multiply(app.rotateMatrixZ, math.multiply(app.rotateMatrixX, app.rotateMatrixY));  
-            var str = write("gyroscope.output", getDateToStr() + "," +
-                                        _alpha + "," +
-                                        _beta + "," +
-                                        _gamma);
+            //var str = write("gyroscope.output", getDateToStr() + "," +
+            //                            _alpha + "," +
+            //                            _beta + "," +
+            //                           _gamma);
         }
     }
 

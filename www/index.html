@@ -10,13 +10,14 @@
     <!-- <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1"> -->
     <!-- <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=no"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes, minimum-scale=1, maximum-scale=2">
-
+    
     <style>
         /* following three viewport lines are equivalent to third meta viewport statement above, and is needed for Windows */
         /* see http://www.quirksmode.org/blog/archives/2014/05/html5_dev_conf.html and http://dev.w3.org/csswg/css-device-adapt/ */
         @-ms-viewport { width: 100vw ; min-zoom: 100% ; zoom: 100% ; }          @viewport { width: 100vw ; min-zoom: 100% ; zoom: 100% ; }
         @-ms-viewport { user-zoom: fixed ; min-zoom: 100% ; }                   @viewport { user-zoom: fixed ; min-zoom: 100% ; }
         @-ms-viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }   @viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }
+        #map_canvas { height: 20%; border: 5px; min-height: 500px; width: 100%}
     </style>
 
     <!-- See long explanation at the bottom of this file for info regarding placement of JS libraries. -->
@@ -27,7 +28,10 @@
     <script src="js/math.js"></script>
     <script src="bower_components/ua-parser-js/dist/ua-parser.min.js"></script>
     <script src="bower_components/moment/min/moment.min.js"></script>
-
+    
+    <script type="text/javascript" 
+            src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDJubmdBYEcmLzYS5S9ICpUKsSRkpF3uFI&sensor=false">
+    </script>
     <link rel="stylesheet" href="css/index.css">
 </head>
 
@@ -43,6 +47,9 @@
         <p class="event listening">Waiting for Device Ready...</p>
         <p class="event received">Device Ready Event Received!</p>
         <p class="event failed">No Device Ready Event Detected...</p>
+    </div>
+    <div id="map_canvas" class="align-center">
+        <p class="event failed">Map should be here...</p>
     </div>
     <div class="align-center">
         <p id="id_msgBar" class="event listening"><span>debug messages go here...</span></p>
@@ -122,6 +129,10 @@
                 <td><input id="geo-longitude" type="text" disabled="disabled" /></td>
             </tr>
             <tr>
+                <td><label for="geo-speed">GeoSpeed:</label></td>
+                <td><input id="geo-speed" type="text" disabled="disabled" /></td>
+            </tr>
+            <tr>
                 <td><label for="geo-accuracy">GeoAccuracy:</label></td>
                 <td><input id="geo-accuracy" type="text" disabled="disabled" /></td>
             </tr>
@@ -136,10 +147,6 @@
             <tr>
                 <td><label for="geo-heading">GeoHeading:</label></td>
                 <td><input id="geo-heading" type="text" disabled="disabled" /></td>
-            </tr>
-            <tr>
-                <td><label for="geo-speed">GeoSpeed:</label></td>
-                <td><input id="geo-speed" type="text" disabled="disabled" /></td>
             </tr>
             <tr>
                 <td><label for="geo-timestamp">GeoTime:</label></td>
@@ -221,6 +228,7 @@
     <script src="js/cordova-acc.js"></script>
     <script src="js/cordova-geo.js"></script>
     <script src="js/init-app.js"></script>
+    <script src="js/map.js"></script>
 
     <script src="xdk/init-dev.js"></script>     <!-- normalizes device and document ready events, see README for details -->
 

@@ -258,24 +258,26 @@ acc.btnCompass = function() {
 
 function sendPostRequest() {
     var user_list = new XMLHttpRequest();
-    var url_user  = "http://192.168.1.2:5000/todo/api/v1.0/taskspost";
+    var url_user  = "http://server-dkdbproject.rhcloud.com/todo/api/v1.0/taskspost";
     bufferForServer = bufferForServer + '"}';
     //var params = 0;
     //var params = '{"title":"Read a book"}';//'{"' + accx + '","' + accy + '","' + accz + '"}';
     // The "true" flag means it is an asynchronous request
     user_list.open("POST", url_user);
-    user_list.onreadystatechange = function () { //Call a function when the state changes.
-    if ((user_list.readyState == 4 ) && user_list.status == 0) {            
-        //JSON.parse(http.responseText)[0].dev_id;   
-            app.consoleLog("suc", user_list.status);
-            app.consoleLog("sucState", user_list.readyState);
-            var response = JSON.parse(user_list.responseText);
-            app.consoleLog(user_list.responseText.toString()) ;
+    
+     //Call a function when the state changes.
+    user_list.onreadystatechange = function () 
+    {
+        if (user_list.readyState == 4 && math.abs(user_list.status - 200) < 10 ) {            
+            //JSON.parse(http.responseText)[0].dev_id;   
+            //app.consoleLog("suc", user_list.status);
+            //app.consoleLog("sucState", user_list.readyState);
+            //var response = JSON.parse(user_list.responseText);
+            //app.consoleLog(user_list.responseText.toString()) ;
         }
         else 
         {
-            //app.consoleLog("Error", user_list.status);
-            //app.consoleLog("State", user_list.readyState);
+            app.consoleLog("Error " + user_list.status + " State " + user_list.readyState);
             //user_list.readyState
             //app.consoleLog(user_list.responseText.toString()) ;
         }
@@ -284,6 +286,6 @@ function sendPostRequest() {
     user_list.setRequestHeader("Content-Type", "application/json");
     user_list.setRequestHeader("Content-length", bufferForServer.length); 
     user_list.send(bufferForServer);
-    app.consoleLog(bufferForServer) ;
+    //app.consoleLog(bufferForServer) ;
     bufferForServer = '{"title":"';
 }
