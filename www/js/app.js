@@ -78,6 +78,10 @@ app.btnFix = function() {
     app.consoleLog(fName, "exit") ;
 } ;
 
+var sumGyroAlpha = 0;
+var sumGyroBeta = 0;
+var sumGyroGamma = 0;
+var countGyro = 0;
 app.getGyro = "no";
 app.btnGyro = function(){
 "use strict" ;
@@ -85,16 +89,15 @@ app.btnGyro = function(){
     acc.consoleLog(fName, "entry") ;
 
     function onSuccess(gyro) {
-        var _alpha = Math.round(gyro.alpha);
-        var _beta  = Math.round(gyro.beta);
-        var _gamma = Math.round(gyro.gamma);
+        var _alpha = Math.round(sumGyroAlpha/count);
+        var _beta  = Math.round(sumGyroBeta/count);
+        var _gamma = Math.round(sumGyroGamma/count);
         
         document.getElementById('gyro').value = _alpha + ", " + _beta + ", " + _gamma;
         
-        if (app.Fix == "yes") 
+        if (count == 25) 
         {
-            app.Fix = "no";
-            
+            //app.Fix = "no";
             var sinAlpha = math.round(math.sin(math.unit(_alpha, 'deg')), 2);
             var cosAlpha = math.round(math.cos(math.unit(_alpha, 'deg')), 2);
             
@@ -118,10 +121,21 @@ app.btnGyro = function(){
                                                 [0,         0,          1] ]); // Matrix
             
             app.rotateMatrix = math.multiply(app.rotateMatrixZ, math.multiply(app.rotateMatrixX, app.rotateMatrixY));  
+            count = 0;
+            sumGyroAlpha = 0;
+            sumGyroBeta = 0;
+            sumGyroGamma = 0;
+            acc.consoleLog("newGyro!");
             //var str = write("gyroscope.output", getDateToStr() + "," +
             //                            _alpha + "," +
             //                            _beta + "," +
             //                           _gamma);
+        }
+        else{
+            count = count+1;
+            sumGyroAlpha = sumGyroAlpha + Math.round(gyro.alpha);
+            sumGyroBeta = sumGyroBeta + Math.round(gyro.beta);
+            sumGyroGamma = sumGyroGamma + Math.round(gyro.gamma);
         }
     }
 
