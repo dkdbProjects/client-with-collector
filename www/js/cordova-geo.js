@@ -148,7 +148,7 @@ geo.locate = function(geoOpts) {
     "use strict" ;
     var fName = "geo.locate():" ;
     geo.consoleLog(fName, "entry") ;
-
+    
     var accuracy = geoOpts.enableHighAccuracy ? "fine" : "coarse" ;
 
     function onSuccess(pos) {
@@ -173,6 +173,7 @@ geo.locate = function(geoOpts) {
                                   pos.coords.latitude.toFixed(6) + "," +
                                   pos.coords.longitude.toFixed(6)
         );
+        //map.processSnapToRoadResponse("-35.27801,149.12958|-35.28032,149.12907|-35.28099,149.12929|-35.28144,149.12984|-35.28194,149.13003|-35.28282,149.12956|-35.28302,149.12881|-35.28473,149.12836");
     }
 
     function onFail(err) {
@@ -263,28 +264,38 @@ geo.locateXDK = function(geoOpts) {
 // The Cordova plugin will polyfill in case the standard API does not exist in the webview.
 // Including the Cordova plugin also eliminates a confusing geo security request.
 
+var last_lat = -1.0;
+var last_lng = -1.0;
 geo.btnGeo = function() {
     "use strict" ;
     var fName = "geo.btnGeo():" ;
     geo.consoleLog(fName, "entry") ;
-
     var geoOpts = copyObject(geo.opts) ;
     if( geoOpts.maximumAge < 0 )
         geoOpts.maximumAge = Infinity ;    // force use of cached geo values if "cachAge" is negative
     var accuracy = geoOpts.enableHighAccuracy ? "fine" : "coarse" ;
 
     function onSuccess(pos) {
-        geo.consoleLog(fName, "onSuccess") ;
+        geo.consoleLog(fName, "onSuccess " + pos.coords.latitude.toFixed(6) + " " + pos.coords.longitude.toFixed(6)) ;
         document.getElementById("geo-info").value = fName + " onSuccess " ;
         document.getElementById("geo-latitude").value = pos.coords.latitude ;
         document.getElementById("geo-longitude").value = pos.coords.longitude ;
         document.getElementById("geo-speed").value =  pos.coords.speed ;
         
-        writeGPS("gps.geo.output", getDateToStr() + "," + 
-                                  pos.coords.latitude.toFixed(6) + "," +
-                                  pos.coords.longitude.toFixed(6) + "," +
-                                  pos.coords.speed.toFixed(6) 
-        );
+        //writeGPS("gps.geo.output", getDateToStr() + "," + 
+        //                          pos.coords.latitude.toFixed(6) + "," +
+        //                          pos.coords.longitude.toFixed(6) + "," +
+         //                         pos.coords.speed.toFixed(6) 
+        //);
+        if(last_lat == -1 && last_lng == -1) {
+            geo.consoleLog("not paint");
+            last_lat = pos.coords.latitude.toFixed(6);
+            last_lng = pos.coords.longitude.toFixed(6);
+        } else {
+            geo.consoleLog("paint");
+            var str = last_lat + "," + last_lng + "|" + pos.coords.latitude.toFixed(6) + "," + pos.coords.longitude.toFixed(6);
+            map.runSnapToRoad(str);
+        }
     }
 
     function onFail(err) {
