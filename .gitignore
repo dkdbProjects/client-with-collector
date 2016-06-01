@@ -1,0 +1,4 @@
+*.xdke
+*bak
+plugins
+xdk-publish-meta-data.json
