@@ -49,9 +49,7 @@ app.btnVibrate = function() {
     "use strict" ;
     var fName = "app.btnVibrate():" ;
     app.consoleLog(fName, "entry") ;
-
     try {
-        writeToFile("action.output", getDateToStr());
         navigator.notification.vibrate(250) ;
         app.consoleLog(fName, "try succeeded.") ;
     }
@@ -86,7 +84,7 @@ app.getGyro = "no";
 app.btnGyro = function(){
 "use strict" ;
     var fName = "app.btnGyro():" ;
-    acc.consoleLog(fName, "entry") ;
+    app.consoleLog(fName, "entry") ;
 
     function onSuccess(gyro) {
         var _alpha = Math.round(sumGyroAlpha/count);
@@ -125,7 +123,7 @@ app.btnGyro = function(){
             sumGyroAlpha = 0;
             sumGyroBeta = 0;
             sumGyroGamma = 0;
-            acc.consoleLog("newGyro!");
+            app.consoleLog("newGyro!");
             //var str = write("gyroscope.output", getDateToStr() + "," +
             //                            _alpha + "," +
             //                            _beta + "," +
@@ -152,7 +150,7 @@ app.btnGyro = function(){
         app.consoleLog(fName, "btnGyro disabled.") ;
     }
 
-    acc.consoleLog(fName, "exit") ;
+    app.consoleLog(fName, "exit") ;
 } ;
 
 app.btnBarkCordova = function() {

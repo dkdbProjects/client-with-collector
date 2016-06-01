@@ -6,7 +6,7 @@
 
 /*jslint browser:true, devel:true, white:true, vars:true */
 /*global $:false, intel:false, device:false, cordova:false */
-/*global app:false, dev:false, acc:false, geo:false */
+/*global app:false, dev:false, acc:false, geo:false, gmap:false */
 /*global UAParser:false */
 
 
@@ -56,8 +56,8 @@ app.init.events = function() {
     acc.initAccel() ;
     acc.initCompass() ;
     geo.initGeoLocate() ;
-    //app.updateDeviceInfo() ;
-    map.initialize();
+    app.updateDeviceInfo() ;
+    gmap.initialize();
 
     // NOTE: initialize your app event handlers
     // See main.js, cordova-acc.js and cordova-geo.js for event handlers.
@@ -170,6 +170,7 @@ var flag = 0;
 
 function write(fileName, data)
 {
+    return;
     // ~ every 2 sec
     if(bufferForServer.length > 2000 && flag == 0)
     {

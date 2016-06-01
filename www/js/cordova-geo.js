@@ -173,7 +173,7 @@ geo.locate = function(geoOpts) {
                                   pos.coords.latitude.toFixed(6) + "," +
                                   pos.coords.longitude.toFixed(6)
         );
-        //map.processSnapToRoadResponse("-35.27801,149.12958|-35.28032,149.12907|-35.28099,149.12929|-35.28144,149.12984|-35.28194,149.13003|-35.28282,149.12956|-35.28302,149.12881|-35.28473,149.12836");
+        //gmap.processSnapToRoadResponse("-35.27801,149.12958|-35.28032,149.12907|-35.28099,149.12929|-35.28144,149.12984|-35.28194,149.13003|-35.28282,149.12956|-35.28302,149.12881|-35.28473,149.12836");
     }
 
     function onFail(err) {
@@ -294,7 +294,9 @@ geo.btnGeo = function() {
         } else {
             geo.consoleLog("paint");
             var str = last_lat + "," + last_lng + "|" + pos.coords.latitude.toFixed(6) + "," + pos.coords.longitude.toFixed(6);
-            map.runSnapToRoad(str);
+            last_lat = pos.coords.latitude.toFixed(6);
+            last_lng = pos.coords.longitude.toFixed(6);
+            gmap.runSnapToRoad(str);
         }
     }
 
