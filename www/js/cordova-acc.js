@@ -32,54 +32,6 @@ acc.consoleLog = function() {           // only emits console.log messages if ac
 
 acc.watchIdAccel = null ;               // holds the accelerometer "watch ID" handle
 
-function accelFunction() {
-"use strict" ;
-    var fName = "acc.btnAccel():" ;
-    acc.consoleLog(fName, "entry") ;
-
-    function onSuccess(acceleration) {
-        
-        var accelMatrix    = math.matrix([ acceleration.x, 
-                                           acceleration.y, 
-                                           acceleration.z ]);            
-
-        var newAccelMatrix =  math.round(math.multiply(app.rotateMatrix, accelMatrix), 2);   
-        
-        document.getElementById('acceleration').value = newAccelMatrix.toString(2);
-        
-        write("accelerometer.output", getDateToStr() + "," +
-                                            math.subset(newAccelMatrix, math.index(0)) + "," +
-                                            math.subset(newAccelMatrix, math.index(1)) + "," +
-                                            math.subset(newAccelMatrix, math.index(2)));
-        
-        //sendPostRequest(math.subset(newAccelMatrix, math.index(0)), math.subset(newAccelMatrix, math.index(1),math.subset(newAccelMatrix, math.index(2))));
-    }
-
-    function onFail() {
-        acc.consoleLog(fName, "Failed to get acceleration data.") ;
-    }
-
-
-    if( acc.watchIdAccel === null ) {
-        try {                               // watch and update accelerometer values every 25 msecs
-            acc.watchIdAccel = navigator.accelerometer.watchAcceleration(onSuccess, onFail, {frequency:25}) ;
-            addClass("cl_btnOn", document.getElementById("id_btnAccel")) ;
-            acc.consoleLog(fName, "btnAccel enabled.") ;
-        }
-        catch(e) {
-            acc.consoleLog(fName, "try failed - device API not present?", e) ;
-        }
-    }
-    else {
-        navigator.accelerometer.clearWatch(acc.watchIdAccel) ;
-        acc.watchIdAccel = null ;
-        removeClass("cl_btnOn", document.getElementById("id_btnAccel")) ;
-        acc.consoleLog(fName, "btnAccel disabled.") ;
-    }
-
-    acc.consoleLog(fName, "exit") ;
-} 
-
 acc.initAccel = function() {
     "use strict" ;
     var fName = "acc.initAccel():" ;
@@ -93,24 +45,10 @@ acc.initAccel = function() {
         acc.consoleLog(fName, "try failed:", e) ;
     }
     acc.consoleLog(fName, "exit") ;
-    accelFunction();
+    acc.btnAccel();
 } ;
 
 
-function getDataFromServer() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', "http://localhost:5000/todo/api/v1.0/tasks", true);
-    xhr.setRequestHeader
-    xhr.send();
-    xhr.onreadystatechange = processRequest;
-    function processRequest(e) {
-        if (xhr.readyState == 4 && xhr.status == 200)
-        {
-            var response = JSON.parse(xhr.responseText);
-            app.consoleLog(xhr.responseText.toString()) ;
-        }
-    }  
-}
 // the following "watches" updates to accelerometer values continuously
 // until the accel button is pushed a second time, which stops the "watch"
 
@@ -120,21 +58,33 @@ acc.btnAccel = function() {
     acc.consoleLog(fName, "entry") ;
 
     function onSuccess(acceleration) {
-        
         var accelMatrix    = math.matrix([ acceleration.x, 
                                            acceleration.y, 
                                            acceleration.z ]);            
 
         var newAccelMatrix =  math.round(math.multiply(app.rotateMatrix, accelMatrix), 2);   
         
+        
+        
+        // save data to client data vars
+        
+        client.speed_data   +=  math.subset(newAccelMatrix, math.index(1)) + ",";
+        client.turns_data   +=  document.getElementById('compass-dir').value + ",";
+        client.defects_data +=  math.subset(newAccelMatrix, math.index(2)) + ",";
+        client.time_data    +=  getDateToStr() + ",";
+        client.values       += 1;
+        
+        client.lat          =  document.getElementById('geo-latitude').value;
+        client.lon          =  document.getElementById('geo-longitude').value;
+        client.speed        =  document.getElementById('geo-speed').value;
+        client.zoom         =  0; // add getting zoom level from gmap
+        
         document.getElementById('acceleration').value = newAccelMatrix.toString(2);
-        
-        //write("accelerometer.output", getDateToStr() + "," +
-       //                                    math.subset(newAccelMatrix, math.index(0)) + "," +
-       //                                     math.subset(newAccelMatrix, math.index(1)) + "," +
-          //                                  math.subset(newAccelMatrix, math.index(2)));
-        
-        //sendPostRequest(math.subset(newAccelMatrix, math.index(0)), math.subset(newAccelMatrix, math.index(1),math.subset(newAccelMatrix, math.index(2))));
+        // write to file
+        write("accelerometer.output", getDateToStr() + "," +
+                                            math.subset(newAccelMatrix, math.index(0)) + "," +
+                                            math.subset(newAccelMatrix, math.index(1)) + "," +
+                                            math.subset(newAccelMatrix, math.index(2)));
     }
 
     function onFail() {
@@ -161,9 +111,6 @@ acc.btnAccel = function() {
 
     acc.consoleLog(fName, "exit") ;
 } ;
-
-
-
 
 acc.watchIdCompass = null ;                 // holds the compass "watch ID" handle
 
@@ -255,47 +202,3 @@ acc.btnCompass = function() {
 
     acc.consoleLog(fName, "exit") ;
 } ;
-
-var speed = "0";
-var x_coordinate = "";
-var y_coordinate = "";
-function sendPostRequest() {
-    var user_list = new XMLHttpRequest();
-    var url_user  = "http://server-dkdbproject.rhcloud.com/todo/api/v1.0/tasks";
-    var sendText = bufferForServer+bufferForGPS + "last_speed;"+ speed+'"}';//"],\n" + bufferForGPS + "],\n" + 'last_speed [\n' + speed + ']\n}';
-    //var params = 0;
-    //var sendText = '{"title":"Read a book"}';//'{"' + accx + '","' + accy + '","' + accz + '"}';
-    // The "true" flag means it is an asynchronous request
-    user_list.open("POST", url_user);
-    app.consoleLog(sendText) ;
-     //Call a function when the state changes.
-    user_list.onreadystatechange = function () 
-    {
-        if (user_list.readyState == 4 && math.abs(user_list.status - 200) < 10 ) {            
-            //JSON.parse(http.responseText)[0].dev_id;   
-            //app.consoleLog("suc", user_list.status);
-            //app.consoleLog("sucState", user_list.readyState);
-            var response = JSON.parse(user_list.responseText);
-            app.consoleLog(user_list.responseText.toString()) ;
-            var temp = user_list.responseText.toString().split(";");
-            var str = temp[1].split(",");
-            x_coordinate = str[0];
-            y_coordinate = str[1];
-            str = speed = temp[3].split('"');
-            speed = str[0];
-            bufferForGPS = 'last_coordinates;'+ x_coordinate + "," + y_coordinate + ";";
-        }
-        else 
-        {
-            app.consoleLog("Error " + user_list.status + " State " + user_list.readyState);
-            //user_list.readyState
-            //app.consoleLog(user_list.responseText.toString()) ;
-        }
-    }   
-    // Send the proper header information
-    user_list.setRequestHeader("Content-Type", "application/json");
-    user_list.setRequestHeader("Content-length", sendText.length); 
-    user_list.send(sendText);
-    //app.consoleLog(bufferForServer) ;
-    bufferForServer = '{"title":"time,accx,accy,accz,compass;';
-}

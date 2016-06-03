@@ -6,7 +6,7 @@
 
 /*jslint browser:true, devel:true, white:true, vars:true */
 /*global $:false, intel:false, device:false, cordova:false */
-/*global app:false, dev:false, acc:false, geo:false, gmap:false */
+/*global app:false, dev:false, acc:false, geo:false, gmap:false, client:false */
 /*global UAParser:false */
 
 
@@ -52,13 +52,14 @@ app.init.events = function() {
     app.init.consoleLog(fName, app.uaParser.getResult()) ;
 
     // NOTE: initialize your application code
-
     acc.initAccel() ;
     acc.initCompass() ;
     geo.initGeoLocate() ;
+    document.getElementById("geo-speed").value =  "1" ;
     app.updateDeviceInfo() ;
     gmap.initialize();
-
+    client.initialize();
+    
     // NOTE: initialize your app event handlers
     // See main.js, cordova-acc.js and cordova-geo.js for event handlers.
 
@@ -160,46 +161,21 @@ function getDateToStr()
 }
 
 // Write data
-var writeMode = "file"
+var writeMode = "no"
 var buffer= {};
-var bufferloc = "";
-var bufferForServer = '{"title":"time,accx,accy,accz,compass;';
-var bufferForGPS = 'last_coordinates;10,12;';
-var count = 0;
-var flag = 0;
 
 function write(fileName, data)
 {
-    return;
-    // ~ every 2 sec
-    if(bufferForServer.length > 2000 && flag == 0)
-    {
-        sendPostRequest();
-    }
-    var flagloc = 0;
-    if (fileName == "accelerometer.output")
-    {
-            flagloc = 1;
-    }
-    if(flag == flagloc)
+    if (writeMode != "yes")
         return;
-    else{
-        count = count + 1;
-        if (count == 2)
-        {
-            bufferForServer = bufferForServer + "," + data + ";";
-            count = 0;
-        }
-        else {
-            bufferForServer = bufferForServer + data;  
-        }
-        flag = flagloc;
+    if (buffer.hasOwnProperty(fileName) && buffer[fileName].length < 2500) {
+        writeToBuffer(fileName, data);
     }
-}
-
-function writeGPS(fileName, data)
-{
-    bufferForGPS = 'last_coordinates;10,12;';
+    else {
+        data = buffer[fileName] + data + "\nbuffer cleaned!";
+        buffer[fileName] = '';
+        writeToFile (fileName, data);
+    }
 }
 
 function writeToFile(fileName, data) {

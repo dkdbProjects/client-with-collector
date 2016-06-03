@@ -25,15 +25,13 @@ app.consoleLog = function() {           // only emits console.log messages if ap
     }
 } ;
 
-
-
 app.btnBeep = function() {
     "use strict" ;
     var fName = "app.btnBeep():" ;
     app.consoleLog(fName, "entry") ;
 
     try {
-        navigator.notification.beep(1) ;
+        client.getPosition()
         app.consoleLog(fName, "try succeeded.") ;
     }
     catch(e) {
