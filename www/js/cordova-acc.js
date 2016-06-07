@@ -45,7 +45,6 @@ acc.initAccel = function() {
         acc.consoleLog(fName, "try failed:", e) ;
     }
     acc.consoleLog(fName, "exit") ;
-    acc.btnAccel();
 } ;
 
 
@@ -114,40 +113,6 @@ acc.btnAccel = function() {
 
 acc.watchIdCompass = null ;                 // holds the compass "watch ID" handle
 
-function compassFunction() {
-    "use strict" ;
-    var fName = "acc.btnCompass():" ;
-    acc.consoleLog(fName, "entry") ;
-    function onSuccess(heading) {
-        var value = heading.magneticHeading.toFixed(6);
-        document.getElementById('compass-dir').value = value ;
-        write("compass.output", getDateToStr() + "," + value);
-    }
-
-    function onFail(compassError) {
-        acc.consoleLog(fName, "Compass error: " + compassError.code) ;
-    }
-
-    if( acc.watchIdCompass === null ) {
-        try {                               // watch and update compass value every 25 msecs
-            acc.watchIdCompass = navigator.compass.watchHeading(onSuccess, onFail, {frequency:25}) ;
-            addClass("cl_btnOn", document.getElementById("id_btnCompass")) ;
-            acc.consoleLog(fName, "btnCompass enabled.") ;
-        }
-        catch(e) {
-            acc.consoleLog(fName, "try failed - device API not present?", e) ;
-        }
-    }
-    else {
-        navigator.compass.clearWatch(acc.watchIdCompass) ;
-        acc.watchIdCompass = null ;
-        removeClass("cl_btnOn", document.getElementById("id_btnCompass")) ;
-        acc.consoleLog(fName, "btnCompass disabled.") ;
-    }
-
-    acc.consoleLog(fName, "exit") ;
-}
-
 acc.initCompass = function() {
     "use strict" ;
     var fName = "acc.initCompass():" ;
@@ -161,7 +126,6 @@ acc.initCompass = function() {
         acc.consoleLog(fName, "try failed:", e) ;
     }
     acc.consoleLog(fName, "exit") ;
-    compassFunction();
 } ;
 
 

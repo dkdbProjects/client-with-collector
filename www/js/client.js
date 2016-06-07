@@ -54,6 +54,11 @@ client.values       = 0;
 client.getPosition = function() {
     client.consoleLog("getPostion started");
     var sendJSON = {};
+    if (client.speed_data == ""){
+        client.consoleLog("speed data is empty! exit...");
+        return;
+    }
+        
     sendJSON["acc_data"] = client.speed_data;
     sendJSON["com_data"] = client.turns_data;
     sendJSON["tim_data"] = client.time_data;
@@ -76,13 +81,18 @@ client.getPosition = function() {
             var pathValues = "" + response["lat"].toString() + "," + response["lon"].toString() + "|" + client.lat.toString() + "," + client.lon.toString();
             client.consoleLog  ("data: ", pathValues);
             
+            gmap.drawSnappedPolyline( parseFloat(response["lat"]),  parseFloat(response["lon"]),
+                                      parseFloat(client.lat),       parseFloat(client.lon), "#0000AA");
+            
             client.lat          = "" + response["lat"].toString();
             client.lon          = "" + response["lon"].toString();
             client.speed        = "" + response["speed"].toString();
             
-            document.getElementById("geo-latitude").value = client.lat ;
+            writeToFile("gps.server.output", getDateToStr() + "," + client.lat + "," + client.lon + "," + client.speed );
+            
+            document.getElementById("geo-latitude").value  = client.lat ;
             document.getElementById("geo-longitude").value = client.lon ;
-            document.getElementById("geo-speed").value =  client.speed ;
+            document.getElementById("geo-speed").value     = client.speed ;
             
             gmap.runSnapToRoad (pathValues);
             setTimeout(client.getPosition, 2000);
@@ -97,7 +107,9 @@ client.getPosition = function() {
     client.time_data    = "";
     client.values = 0;
 };
-
+client.btnPos = function() {
+    client.getPosition();
+}
 // get map of defects near user
 // app.route("/get_defect_map/<float:lat>/<float:lon>/<int:zoom>", methods=['GET'])
 // Send:   lat, lon, zoom
@@ -115,6 +127,9 @@ client.getRoadMap = function() {
         }
     }
     xhr.send();
+};
+client.btnDefect = function() {
+    client.consoleLog("btnDefect is not implemented");
 };
 
 // @app.route("/send_collected_data", methods=['PUT'])

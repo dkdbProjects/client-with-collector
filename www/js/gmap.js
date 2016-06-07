@@ -20,7 +20,6 @@ gmap.consoleLog = function() {           // only emits console.log messages if g
 
 var map;
 var lines = [];
-var polylines = [];
 var gmarkers = [];
 gmarkers.push(new google.maps.LatLng(53.7877, -2.9832));
 gmarkers.push(new google.maps.LatLng(53.9007, -2.9832));
@@ -55,12 +54,18 @@ gmap.removeLine = function(id) {
  }
 
 gmap.removeAllLines = function () {
+    if (lines.lenght == 0)
+        return;
     firstCenter = lines[0].getPath().getAt(0);
     map.setCenter (firstCenter);
     lines.forEach(function (element) {
         element.setMap(null);
     });
     lines.splice(0, lines.length);
+}
+
+gmap.btnClear = function() {
+    gmap.removeAllLines();
 }
 
 gmap.initialize = function () {
@@ -118,32 +123,28 @@ gmap.processSnapToRoadResponse = function(data) {
     gmap.consoleLog ("processSnapToRoadResponse: len(str) = " + str.length);
     for ( var i = 0; i < str.length-4; i += 2 )
     {
-        curlat = str[i];
-        curlng = str[i+1];
+        curlat  = str[i];
+        curlng  = str[i+1];
         nextlat = str[i+2];
         nextlng = str[i+3]; 
         
         gmap.drawSnappedPolyline( parseFloat(curlat),  parseFloat(curlng),
-                                  parseFloat(nextlat), parseFloat(nextlng));
+                                  parseFloat(nextlat), parseFloat(nextlng), "#FF0000" );
     }
     gmap.consoleLog ("processSnapToRoadResponse: done!");
 }
 
 // Draws the snapped polyline (after processing snap-to-road response).
-gmap.drawSnappedPolyline = function(curlat,curlng,nextlat,nextlng) {
-    gmap.consoleLog ("drawSnappedPolyline");
-    startpoint = new google.maps.LatLng(curlat,curlng);
-    lastpoint = new google.maps.LatLng(nextlat,nextlng);
-    gmap.consoleLog ("startpoint is " + startpoint);
+gmap.drawSnappedPolyline = function(curlat,curlng,nextlat,nextlng, line_color) {
+    var startpoint = new google.maps.LatLng(curlat,curlng);
+    var lastpoint  = new google.maps.LatLng(nextlat,nextlng);
     map.setCenter (startpoint);
     var line = new google.maps.Polyline({
-        path: [
-            new google.maps.LatLng(curlat,curlng), 
-            new google.maps.LatLng(nextlat,nextlng)
-        ],
-        strokeColor: "#FF0000",
+        path: [ startpoint, lastpoint ],
+        strokeColor: line_color.toString(),
         strokeOpacity: 1.0,
         strokeWeight: 10,
         map: map
     });
+    lines.push(line);
  }

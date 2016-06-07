@@ -73,6 +73,13 @@ app.init.events = function() {
     else                                                            // else, assume touch events available
         evt = "touchend" ;                                          // not optimum, but works
 
+    el = document.getElementById("id_btnClear") ;
+    el.addEventListener(evt, gmap.btnClear, false) ;
+    el = document.getElementById("id_btnDefect") ;
+    el.addEventListener(evt, client.btnDefect, false) ;
+    el = document.getElementById("id_btnPos") ;
+    el.addEventListener(evt, client.btnPos, false)
+    
     el = document.getElementById("id_btnBeep") ;
     el.addEventListener(evt, app.btnBeep, false) ;
     el = document.getElementById("id_btnVibrate") ;
@@ -161,13 +168,12 @@ function getDateToStr()
 }
 
 // Write data
-var writeMode = "no"
+var writeMode = "file"
 var buffer= {};
 
 function write(fileName, data)
 {
-    if (writeMode != "yes")
-        return;
+    // ~ every 5 sec
     if (buffer.hasOwnProperty(fileName) && buffer[fileName].length < 2500) {
         writeToBuffer(fileName, data);
     }
@@ -178,13 +184,22 @@ function write(fileName, data)
     }
 }
 
+function writeToBuffer(fileName, data)
+{
+    if (! buffer.hasOwnProperty(fileName)) {
+        buffer[fileName] = "";
+    }
+    buffer[fileName]+= ( data + "\n" );
+}
+
 function writeToFile(fileName, data) {
     // See README https://github.com/apache/cordova-plugin-file
+    console.log('init-app.js: writeToFile');
     window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (directoryEntry) {
         directoryEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
             fileEntry.createWriter(function (fileWriter) {
                 fileWriter.onwriteend = function (e) {
-                    // console.log('init-app.js: writeToFile completed!');
+                    console.log('init-app.js: writeToFile completed!');
                 };
                 fileWriter.onerror = function (e) {
                     console.log('init-app.js: writeToFile failed: ' + e.toString());

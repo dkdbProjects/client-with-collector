@@ -169,7 +169,7 @@ geo.locate = function(geoOpts) {
         //document.getElementById("geo-speed").value = pos.coords.speed ;
         //document.getElementById("geo-timestamp").value = pos.timestamp ;
         
-        writeGPS("gps.locale.output", getDateToStr() + "," + 
+        writeToFile("gps.locale.output", getDateToStr() + "," + 
                                   pos.coords.latitude.toFixed(6) + "," +
                                   pos.coords.longitude.toFixed(6)
         );
@@ -230,7 +230,7 @@ geo.locateXDK = function(geoOpts) {
         document.getElementById("geo-latitude").value = pos.coords.latitude ;
         document.getElementById("geo-longitude").value = pos.coords.longitude ;
         
-        writeGPS("gps.locale.xdk.output", getDateToStr() + "," + 
+        writeToFile("gps.locale.xdk.output", getDateToStr() + "," + 
                                   pos.coords.latitude.toFixed(6) + "," +
                                   pos.coords.longitude.toFixed(6)
         );
@@ -284,11 +284,11 @@ geo.btnGeo = function() {
         document.getElementById("geo-longitude").value = pos.coords.longitude ;
         document.getElementById("geo-speed").value =  pos.coords.speed ;
         
-        //writeGPS("gps.geo.output", getDateToStr() + "," + 
-        //                          pos.coords.latitude.toFixed(6) + "," +
-        //                          pos.coords.longitude.toFixed(6) + "," +
-         //                         pos.coords.speed.toFixed(6) 
-        //);
+        writeToFile("gps.geo.output", getDateToStr() + "," + 
+                                  pos.coords.latitude.toFixed(6) + "," +
+                                  pos.coords.longitude.toFixed(6) + "," +
+                                  pos.coords.speed.toFixed(6) 
+        );
         if(last_lat == -1 && last_lng == -1) {
             geo.consoleLog("not paint");
             last_lat = pos.coords.latitude.toFixed(6);
@@ -356,7 +356,7 @@ geo.btnGeoXDK = function() {
         document.getElementById("geo-latitude").value = pos.coords.latitude ;
         document.getElementById("geo-longitude").value = pos.coords.longitude ;
 
-        writeGPS("gps.geo.xdk.output", getDateToStr() + "," + 
+        writeToFile("gps.geo.xdk.output", getDateToStr() + "," + 
                                   pos.coords.latitude.toFixed(6) + "," +
                                   pos.coords.longitude.toFixed(6)
         );
