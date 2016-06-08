@@ -88,14 +88,13 @@ client.getPosition = function() {
             client.lon          = "" + response["lon"].toString();
             client.speed        = "" + response["speed"].toString();
             
-            writeToFile("gps.server.output", getDateToStr() + "," + client.lat + "," + client.lon + "," + client.speed );
-            
             document.getElementById("geo-latitude").value  = client.lat ;
             document.getElementById("geo-longitude").value = client.lon ;
             document.getElementById("geo-speed").value     = client.speed ;
             
             gmap.runSnapToRoad (pathValues);
             setTimeout(client.getPosition, 2000);
+            writeToFile("gps.server.output", getDateToStr() + "," + client.lat + "," + client.lon + "," + client.speed );
         }
     };
     xhr.setRequestHeader("Content-Type", "application/json");  

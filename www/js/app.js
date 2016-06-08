@@ -55,9 +55,15 @@ app.btnVibrate = function() {
     app.consoleLog(fName, "exit") ;
 } ;
 
-app.rotateMatrixX = {};
-app.rotateMatrixY = {};
-app.rotateMatrixZ = {};
+app.rotateMatrixX = math.matrix([ [1,  0,  0],
+                                  [0,  1,  0], 
+                                  [0,  0,  1] ]);
+app.rotateMatrixY = math.matrix([ [1,  0,  0],
+                                  [0,  1,  0], 
+                                  [0,  0,  1] ]);
+app.rotateMatrixZ = math.matrix([ [1,  0,  0],
+                                  [0,  1,  0], 
+                                  [0,  0,  1] ]);
 app.rotateMatrix  = math.matrix([ [1,  0,  0],
                                   [0,  1,  0], 
                                   [0,  0,  1] ]);
@@ -110,9 +116,9 @@ app.btnGyro = function(){
                                                 [0,         1,          0], 
                                                 [-sinGamma, 0,          cosGamma] ]);
              // Z is axis of rotation 
-            app.rotateMatrixZ   = math.matrix([ [cosAlpha,  -sinAlpha,  0],
-                                                [sinAlpha,  cosAlpha,   0], 
-                                                [0,         0,          1] ]); // Matrix
+            //app.rotateMatrixZ   = math.matrix([ [cosAlpha,  -sinAlpha,  0],
+            //                                    [sinAlpha,  cosAlpha,   0], 
+            //                                   [0,         0,          1] ]); // Matrix
             
             app.rotateMatrix = math.multiply(app.rotateMatrixZ, math.multiply(app.rotateMatrixX, app.rotateMatrixY));  
             var str = write("gyroscope.output", getDateToStr() + "," +
