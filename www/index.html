@@ -17,7 +17,7 @@
         @-ms-viewport { width: 100vw ; min-zoom: 100% ; zoom: 100% ; }          @viewport { width: 100vw ; min-zoom: 100% ; zoom: 100% ; }
         @-ms-viewport { user-zoom: fixed ; min-zoom: 100% ; }                   @viewport { user-zoom: fixed ; min-zoom: 100% ; }
         @-ms-viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }   @viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }
-        #map_canvas { height: 20%; border: 5px; min-height: 200px; width: 100%}
+        #map_canvas { height: 20%; border: 5px; min-height: 500px; width: 100%}
     </style>
 
     <!-- See long explanation at the bottom of this file for info regarding placement of JS libraries. -->
@@ -56,10 +56,13 @@
     <br>
 
     <p class="align-center">
-        <input id="id_btnBeep"          type="button" value="Beep" />
+        
         <input id="id_btnPos"           type="button" value="get_pos" />
         <input id="id_btnDefect"        type="button" value="get_def" />
+        <input id="id_btnData"          type="button" value="post_data" />
         <input id="id_btnClear"         type="button" value="clean_map" />
+        <br>
+        <input id="id_btnBeep"          type="button" value="Beep" />
         <input id="id_btnVibrate"       type="button" value="Vibrate" />
         <br>
         <audio src="audio/bark.wav" preload="metadata" style="width: 0; overflow: hidden; float: left; display: none;" ></audio>

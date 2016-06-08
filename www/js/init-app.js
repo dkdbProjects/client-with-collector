@@ -79,6 +79,8 @@ app.init.events = function() {
     el.addEventListener(evt, client.btnDefect, false) ;
     el = document.getElementById("id_btnPos") ;
     el.addEventListener(evt, client.btnPos, false)
+    el = document.getElementById("id_btnData") ;
+    el.addEventListener(evt, client.btnData, false)
     
     el = document.getElementById("id_btnBeep") ;
     el.addEventListener(evt, app.btnBeep, false) ;
@@ -194,12 +196,11 @@ function writeToBuffer(fileName, data)
 
 function writeToFile(fileName, data) {
     // See README https://github.com/apache/cordova-plugin-file
-    console.log('init-app.js: writeToFile');
     window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (directoryEntry) {
         directoryEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
             fileEntry.createWriter(function (fileWriter) {
                 fileWriter.onwriteend = function (e) {
-                    console.log('init-app.js: writeToFile completed!');
+                    //console.log('init-app.js: writeToFile completed!');
                 };
                 fileWriter.onerror = function (e) {
                     console.log('init-app.js: writeToFile failed: ' + e.toString());

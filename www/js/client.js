@@ -93,7 +93,7 @@ client.getPosition = function() {
             document.getElementById("geo-speed").value     = client.speed ;
             
             gmap.runSnapToRoad (pathValues);
-            setTimeout(client.getPosition, 2000);
+            setTimeout(client.getPosition, 500);
             writeToFile("gps.server.output", getDateToStr() + "," + client.lat + "," + client.lon + "," + client.speed );
         }
     };
@@ -115,34 +115,83 @@ client.btnPos = function() {
 // Return: list of polylines
 client.getRoadMap = function() {
     var xhr = new XMLHttpRequest();
-    var query = client.url + "/get_defect_map/" + client.lat + "/" + client.lon+ "/" + client.zoom;
+    var query = client.url + "/get_defect_map";
     xhr.open('GET', query, true);
     xhr.onreadystatechange = processRequest;
     function processRequest(e) {
         if (xhr.readyState == 4 && xhr.status == 200)
         {
-            var response = JSON.parse(xhr.responseText);
-            app.consoleLog(xhr.responseText.toString());
+            var data = JSON.parse(xhr.responseText);
+            //client.consoleLog(xhr.responseText.toString());
+            for (var i = 0; i < data.lines.length; i++) {
+                
+                var color = data.lines[i].color;
+                if ( color == 1 )
+                    color = "#00AA00";
+                else if (color == 2)
+                    color = "#00AA00";
+                else if (color == 3)
+                    color = "#EEEE00";
+                else
+                    color = "#FF0000";
+                gmap.drawSnappedPolyline( parseFloat(data.lines[i].start_lat),  parseFloat(data.lines[i].start_lon),
+                                          parseFloat(data.lines[i].end_lat),    parseFloat(data.lines[i].end_lon), color );
+            }
         }
     }
     xhr.send();
 };
+
 client.btnDefect = function() {
-    client.consoleLog("btnDefect is not implemented");
+    app.consoleLog("btnDefect");
+    client.getRoadMap();
 };
 
 // @app.route("/send_collected_data", methods=['PUT'])
 // Send: all w/o speed
 client.postRoadMapData = function() {
+    client.consoleLog("postRoadMapData started");
+    var sendJSON = {};
+    if (client.speed_data == ""){
+        client.consoleLog("speed data is empty! exit...");
+        return;
+    }
+        
+    sendJSON["acc_data"] = client.speed_data;
+    sendJSON["com_data"] = client.turns_data;
+    sendJSON["tim_data"] = client.time_data;
+    sendJSON["def_data"] = client.defects_data;
+    sendJSON["lat"]      = client.lat;
+    sendJSON["lon"]      = client.lon;
+    sendJSON["values"]   = "" + client.values;
+    var send_data = JSON.stringify(sendJSON)
+    client.consoleLog(send_data);
+
+    var query = client.url + "/send_collected_data";
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', url + "", true);
+      
+    xhr.open('POST', query , true);
+    
     xhr.onreadystatechange = processRequest;
     function processRequest(e) {
+        client.consoleLog ("postRoadMapData response: status = " + xhr.status + " state = " + xhr.readyState); 
         if (xhr.readyState == 4 && xhr.status == 200)
         {
-            var response = JSON.parse(xhr.responseText);
-            app.consoleLog(xhr.responseText.toString()) ;
+            setTimeout(client.postRoadMapData, 500);
+            app.consoleLog("postRoadMapData response: " + xhr.responseText.toString()) ;
         }
     }
-    xhr.send();
+    xhr.setRequestHeader("Content-Type", "application/json");  
+    xhr.send(send_data);
+    
+    client.speed_data   = "";
+    client.turns_data   = "";
+    client.defects_data = "";
+    client.time_data    = "";
+    client.values = 0;
 };
+client.btnData = function()
+{
+    app.consoleLog("btnData");
+    client.postRoadMapData();
+}
